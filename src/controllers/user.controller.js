@@ -1,4 +1,4 @@
-import { connectDB } from "../config/db.js";
+import {  mysql_db } from "../config/db.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import {sendRegistrationEmail} from "../services/email.service.js"
@@ -19,9 +19,7 @@ export const handleUserRegister = async (req, res) => {
       });
     }
 
-    const db = await connectDB();
-
-    const [user] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
+    const [user] = await mysql_db.query("SELECT * FROM users WHERE email = ?", [email]);
 
     if(user.length > 0) {
       return res.status(400).json({
@@ -32,7 +30,7 @@ export const handleUserRegister = async (req, res) => {
 
     const hashpassword = await bcrypt.hash(password, 10);
 
-    const [result] = await db.query("INSERT INTO users (email, name, password) VALUES (?,?,?)", [email, name, hashpassword]);
+    const [result] = await mysql_db.query("INSERT INTO users (email, name, password) VALUES (?,?,?)", [email, name, hashpassword]);
 
     res.status(201).json({
       sucess: true,
@@ -64,9 +62,7 @@ export const handleUserLogin = async(req, res) => {
       });
     }
 
-    const db = await connectDB();
-
-    const [user] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
+    const [user] = await mysql_db.query("SELECT * FROM users WHERE email = ?", [email]);
 
     if(user.length === 0) {
        return res.status(400).json({
@@ -87,7 +83,7 @@ export const handleUserLogin = async(req, res) => {
 
     const token = jwt.sign(
       {
-        id : dbUser.insertId,
+        id : dbUser.id,
         name: dbUser.name
       },
       process.env.JWT_SECRET,
