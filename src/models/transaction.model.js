@@ -1,6 +1,6 @@
 import { connectDB } from "../config/db.js";
 
-export const createAccountTable = async () => {
+export const createTransactionTable = async () => {
   try {
     const connection = await connectDB();
     await connection.execute(`
@@ -35,4 +35,4 @@ export const createAccountTable = async () => {
   }
 };
 
-await createAccountTable();
+await createTransactionTable();
