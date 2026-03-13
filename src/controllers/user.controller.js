@@ -1,6 +1,7 @@
 import { connectDB } from "../config/db.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import {sendRegistrationEmail} from "../services/email.service.js"
 
 export const handleUserRegister = async (req, res) => {
   try {
@@ -41,6 +42,9 @@ export const handleUserRegister = async (req, res) => {
         name: name
       }
     });
+
+      // console.log(email,name);
+    await sendRegistrationEmail(email, name);
   } catch (error) {
     res.status(500).json({
       success: false,
