@@ -64,3 +64,6 @@ export async function sendTransactionFailureEmail(userEmail, name, amount, toAcc
 
     await sendEmail(userEmail, subject, text, html);
 }
+
+
+//Resource[https://github.com/ankurdotio/Difference-Backend-video/tree/main/026-nodemailer]
