@@ -14,7 +14,7 @@ export const authMiddleware = async (req, res, next) => {
         const decode = jwt.verify(token, process.env.JWT_SECRET);
         const userId = decode.id;
 
-        console.log(userId);
+        // console.log(userId);
 
          // Using existing pool instead of connecting every time
         const [rows] = await mysql_db.query("SELECT * FROM users WHERE id = ?", [userId]);
@@ -32,3 +32,7 @@ export const authMiddleware = async (req, res, next) => {
         });
     }
 };  
+
+export const authSystemUsermiddleware = async(req, res, next) => {
+    
+};

@@ -35,8 +35,8 @@ export const handleUserRegister = async (req, res) => {
     res.status(201).json({
       sucess: true,
       user: {
-         id: result.insertId ,
-         email: email,
+        id: result.insertId ,
+        email: email,
         name: name
       }
     });
