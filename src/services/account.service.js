@@ -1,6 +1,6 @@
 import { mysql_db } from "../config/db.js";
 
-export async function getAccountBalance(accountId, conn = null) {
+export async function getAccountBalanceService(accountId, conn = null) {
     const db = conn ?? mysql_db;
 
     const [rows] = await db.query(
@@ -8,7 +8,7 @@ export async function getAccountBalance(accountId, conn = null) {
             COALESCE(SUM(CASE WHEN type = 'CREDIT' THEN amount ELSE 0 END), 0) -
             COALESCE(SUM(CASE WHEN type = 'DEBIT'  THEN amount ELSE 0 END), 0) AS balance
          FROM ledgers
-         WHERE account_id = ?`,
+         WHERE account = ?`,
         [accountId]
     );
 

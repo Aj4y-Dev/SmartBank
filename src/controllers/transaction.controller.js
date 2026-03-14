@@ -1,5 +1,5 @@
 import { mysql_db } from "../config/db.js";
-import {getAccountBalance} from "../services/account.service.js"
+import {getAccountBalanceService} from "../services/account.service.js"
 import {sendTransactionEmail} from "../services/email.service.js"
 
 /*
@@ -60,8 +60,8 @@ export const createTransaction = async (req, res) => {
             })
         }
     
-        const fromAccount = fromRows[0];
-        const toAccount = toRows[0];
+        const fromAccountData = fromRows[0];
+        const toAccountData = toRows[0];
 
         //2. Validate idempotency key
         const [existingTx] = await connection.query("SELECT * FROM transactions WHERE idempotency_key = ?", [idempotencykey]);
@@ -108,7 +108,7 @@ export const createTransaction = async (req, res) => {
         }
 
         //3. Check account status
-        if (fromAccount.status !== "ACTIVE") {
+        if (fromAccountData.status !== "ACTIVE") {
             if (connection) {
                 await connection.rollback();
                 connection.release();
@@ -116,7 +116,7 @@ export const createTransaction = async (req, res) => {
             return res.status(400).json({ message: "Sender account is not ACTIVE." });
         }
 
-        if (toAccount.status !== "ACTIVE") {
+        if (toAccountData.status !== "ACTIVE") {
             if (connection) {
                 await connection.rollback();
                 connection.release();
@@ -125,7 +125,7 @@ export const createTransaction = async (req, res) => {
         }
 
         //4. Derive sender balance from ledger 
-        const balance = await getAccountBalance(from_account, connection);
+        const balance = await getAccountBalanceService(fromAccount, connection);
 
         if(balance < amount) {
             if (connection) {
@@ -276,7 +276,7 @@ export const createInitialFundsTransaction = async (req, res) => {
         await connection.query(
             `INSERT INTO ledgers (account, transaction, amount, type)
              VALUES (?, ?, ?, 'CREDIT')`,
-            [req.user.account_id, transactionId, amount]
+            [toAccount, transactionId, amount]
         );
 
          // Mark COMPLETED
