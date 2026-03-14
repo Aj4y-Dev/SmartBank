@@ -82,6 +82,7 @@ The application is built leveraging a modern Javascript/Node environment, ensuri
 | **Database** | `MySQL` | High-performance relational database management system. |
 | **Security** | `jsonwebtoken` / `bcryptjs` | JWT for stateless, secure auth and bcrypt for robust password hashing. |
 | **Utilities** | `cookie-parser` / `dotenv` | Secure HTTP cookie parsing and environment variable configuration isolation. |
+| **Emailing** | `nodemailer` | Sending automated emails utilizing the secure Gmail API (OAuth2). |
 | **Tooling** | `pnpm` / `nodemon` | Fast, disk-space efficient package manager and auto-reloading dev server. |
 
 ---
@@ -195,6 +196,22 @@ You must supply a `.env` file at the root of the `./SmartBank` directory. Note: 
 | `DB_PASSWORD` | String | Secure password for the MySQL user. | `s3cr3t_p@ssw0rd` |
 | `DB_NAME` | String | Target logical database name. | `smartbank_db` |
 | `JWT_SECRET` | String | High-entropy string for signing user Auth tokens. | `a_very_long_random_string_here` |
+| `CLIENT_ID` | String | Google OAuth2 Client ID for Gmail API authentication. | `851176822...googleusercontent.com` |
+| `CLIENT_SECRET` | String | Google OAuth2 Client Secret for Gmail API. | `GOCSPX-your_secret` |
+| `REFRESH_TOKEN` | String | Google OAuth2 Refresh Token for continuous email service. | `1//your_google_refresh_token` |
+| `EMAIL_USER` | String | The origin Gmail address used for dispatching platform emails. | `your_email@gmail.com` |
+
+---
+
+## 📚 Resources
+
+<!-- Helpful developer references and documentation:
+  - MySQL Transactions: http://geeksforgeeks.org/mysql/mysql-transaction/
+  - Nodemailer OAuth2: https://nodemailer.com/smtp/oauth2/
+  - Express Security: https://expressjs.com/en/advanced/best-practice-security.html
+-->
+
+- [Understanding MySQL Transactions (GeeksforGeeks)](http://geeksforgeeks.org/mysql/mysql-transaction/)
 
 ---
 
