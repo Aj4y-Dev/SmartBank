@@ -1,170 +1,206 @@
-# SmartBank Core API
+<div align="center">
 
-> A robust, secure, and modern core banking RESTful API backend engineered for reliable financial operations. 
+# 🏦 SmartBank Core API
 
-SmartBank API provides essential banking services, prioritizing data integrity, security, and scalability. It handles user authentication, account management, and transactional processing with strict validation and authorization controls.
+> **A robust, secure, and modern core banking RESTful API engineered for reliable financial operations.**
+
+[![Node.js](https://img.shields.io/badge/Node.js-18.x-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Express.js](https://img.shields.io/badge/Express.js-Fast_Unopinionated-000000?logo=express&logoColor=white)](https://expressjs.com/)
+[![MySQL](https://img.shields.io/badge/MySQL-Relational_DB-4479A1?logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
+
+</div>
 
 ---
 
-## 🏛️ System Architecture Workflow
+## 📖 Table of Contents
+- [Introduction](#-introduction)
+- [System Architecture](#-system-architecture)
+- [Technology Stack](#-technology-stack)
+- [Project Structure](#-project-structure)
+- [API Reference Manual](#-api-reference-manual)
+- [Getting Started](#-getting-started)
+- [Environment Variables](#-environment-variables)
+- [License](#-license)
 
-The system employs a standard multi-tier architectural pattern, utilizing middleware for secure request validation before business logic execution.
+---
+
+## 🌟 Introduction
+
+**SmartBank API** provides essential backend banking services, prioritizing **data integrity**, **security**, and **scalability**. It handles user identity management, account provisioning, and transactional processing with strict validation and authorization controls.
+
+Whether you're building a web frontend, a mobile application, or a third-party microservice, this backend serves as a secure, fast, and consistent single source of truth for all ledger and user data.
+
+---
+
+## 🏛️ System Architecture
+
+The core of SmartBank operates on a standard multi-tier architectural pattern. We isolate route definitions, middleware validation, business logic, and database interactions to maintain high cohesion and low coupling.
 
 ```mermaid
 graph TD
-    Client(["Client Application (Web/Mobile/API Client)"]) -- "HTTP/REST Requests" --> Gateway["Express API & Router"]
+    Client(["📱 Client (Web/Mobile)"]) -- "HTTP/REST Requests" --> Gateway["🌐 Express API Router"]
     
-    subgraph "Application Layer"
-        Gateway --> AuthMiddleware{"JWT Authentication Middleware"}
-        AuthMiddleware -- "Invalid Token" --> Unauthorized["401 Unauthorized Response"]
-        AuthMiddleware -- "Valid Token" --> Controllers["Controllers (Req/Res Handling)"]
+    subgraph "Application Layer (Node.js/Express)"
+        Gateway --> AuthMiddleware{"🛡️ JWT Auth Middleware"}
+        AuthMiddleware -- "Invalid Token" --> Unauthorized["❌ 401 Unauthorized Response"]
+        AuthMiddleware -- "Valid Token / Public Route" --> Controllers["⚙️ Controllers"]
         
-        Controllers --> Services["Business Logic Services"]
+        Controllers --> Services["🧠 Business Logic Services"]
         
-        Services -- "Authentication" --> UserAuth["User Authentication & Hashing"]
-        Services -- "Ledger" --> Ledger["Ledger & Transaction Processing"]
-        Services -- "Accounts" --> AccountManagement["Account Verification & Management"]
+        Services -- "Authentication logic" --> UserAuth["Identity & Registration"]
+        Services -- "Ledger operations" --> Ledger["Transaction Processing"]
+        Services -- "Account logic" --> AccountManagement["Account Verification"]
     end
     
-    subgraph "Data Layer"
-        UserAuth --> DB[("MySQL Database")]
+    subgraph "Data Persistence Layer"
+        UserAuth --> DB[("🛢️ MySQL Database")]
         Ledger --> DB
         AccountManagement --> DB
     end
     
     DB -. "Query Results" .-> Services
-    Services -. "Formatted Data" .-> Controllers
-    Controllers -. "JSON Responses" .-> Gateway
-    Gateway -. "HTTP/JSON" .-> Client
+    Services -. "Standardized Data" .-> Controllers
+    Controllers -. "JSON HTTP Responses" .-> Gateway
+    Gateway -. "HTTP 200/201/400" .-> Client
+
+    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
+    classDef highlight fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px;
+    class Gateway,AuthMiddleware,Controllers highlight;
 ```
 
 ---
 
 ## 🛠️ Technology Stack
 
-The application is built upon a modern Node.js stack, ensuring performant non-blocking I/O operations suitable for financial data processing.
+The application is built leveraging a modern Javascript/Node environment, ensuring performant non-blocking I/O operations crucial for high-throughput financial data processing.
 
-### Core Technologies
-- **Runtime Environment:** [Node.js](https://nodejs.org/)
-- **Web Framework:** [Express.js](https://expressjs.com/)
-- **Database Management System:** [MySQL](https://www.mysql.com/)
-
-### Key Libraries & Modules
-- **Authentication & Security:** 
-  - `jsonwebtoken` (JWT specification for stateless authentication)
-  - `bcryptjs` (Cryptographic hashing for credential security)
-  - `cookie-parser` (Secure HTTP cookie management)
-- **Database Driver:** `mysql2` (High-performance MySQL client)
-- **Configuration Management:** `dotenv` (Environment variable isolation)
-- **Development Tooling:** `nodemon` (Hot-reloading), `pnpm` (Fast deterministic dependency resolution)
+| Domain | Technology | Description |
+| :--- | :--- | :--- |
+| **Runtime** | `Node.js` | Asynchronous event-driven JavaScript runtime. |
+| **Framework** | `Express.js` | Fast, unopinionated web framework for Node.js. |
+| **Database** | `MySQL` | High-performance relational database management system. |
+| **Security** | `jsonwebtoken` / `bcryptjs` | JWT for stateless, secure auth and bcrypt for robust password hashing. |
+| **Utilities** | `cookie-parser` / `dotenv` | Secure HTTP cookie parsing and environment variable configuration isolation. |
+| **Tooling** | `pnpm` / `nodemon` | Fast, disk-space efficient package manager and auto-reloading dev server. |
 
 ---
 
-## 🚀 Getting Started
+## 🏗️ Project Structure
 
-Follow these instructions to provision the application in your local development environment.
+A clean, modular directory topology to enforce the separation of concerns:
 
-### Prerequisites
-
-Ensure the following dependencies are installed on your host machine:
-- Node.js (v18.x or higher)
-- MySQL Server (v8.x or higher)
-- PNPM Package Manager (v10.x or higher)
-
-### Environment Configuration
-
-1. Clone the repository and navigate to the project directory:
-   ```bash
-   cd SmartBank
-   ```
-
-2. Duplicate the environment template (if available) or create a fresh `.env` file in the repository root:
-   ```env
-   # Server Configuration
-   PORT=4000
-   
-   # Database Configuration
-   DB_HOST=127.0.0.1
-   DB_USER=root
-   DB_PASSWORD=your_secure_password
-   DB_NAME=smartbank_db
-   
-   # Security
-   JWT_SECRET=your_cryptographically_secure_random_string
-   ```
-
-### Installation
-
-Install the required dependencies using the PNPM package manager:
-```bash
-pnpm install
+```text
+SmartBank/
+├── .env                     # 🔒 Local environment variables (Git Ignored)
+├── package.json             # 📦 Project manifest, scripts, and dependencies
+├── server.js                # 🚀 Application bootstrapper and HTTP server binding
+└── src/
+    ├── app.js               # 🔌 Express App setup, global middleware, routing
+    ├── config/              # ⚙️ Infrastructure and database connection setup
+    ├── controllers/         # 🧠 Request validation and response orchestrators
+    ├── middleware/          # 🛡️ Interceptors (Security, Auth, Error Handling)
+    ├── models/              # 🗃️ Database schemas, queries, and migrations
+    ├── routers/             # 🧭 URL Path definitions and HTTP Verb mappings
+    └── services/            # 💼 Domain-specific business/external logic
 ```
-
-### Execution
-
-To initialize the development server with hot-reloading enabled:
-```bash
-pnpm run dev
-```
-*The server will typically bind to `http://localhost:4000` depending on your environment variables.*
 
 ---
 
 ## 📡 API Reference Manual
 
-The API is structured around REST principles, responding to standard HTTP verbs and utilizing JSON for payload delivery.
+The API is structured following standard REST conventions, responding with standard HTTP status codes and strict `application/json` structured payloads.
 
-### 1. Identity Verification (Authentication)
-Endpoints governing user lifecycle and identity management.
-
-| Method | Endpoint | Description | Auth Required |
+### 🌐 System Health Check
+Verify that the core API server is online and accepting connections.
+| Method | Endpoint | Description | Auth Validation |
 | :--- | :--- | :--- | :---: |
-| `POST` | `/api/auth/register` | Provisions a new user identity in the system. | ❌ |
-| `POST` | `/api/auth/login` | Authenticates credentials and issues a secure JWT cookie. | ❌ |
-| `POST` | `/api/auth/logout` | Invalidates the active session and clears HTTP cookies. | ❌ |
+| `GET` | `/` | Confirms the API server root is operational. | ❌ (Public) |
 
-### 2. Account Management
-Endpoints responsible for the creation and querying of financial accounts.
-
-| Method | Endpoint | Description | Auth Required |
+### 🔐 1. Identity Verification (Authentication)
+Endpoints governing user lifecycle, creation, and secure JWT-based identity management.
+| Method | Endpoint | Description | Auth Validation |
 | :--- | :--- | :--- | :---: |
-| `POST` | `/api/accounts/` | Provisions a new bank account associated with the authenticated user. | ✅ |
-| `GET` | `/api/accounts/` | Retrieves a comprehensive list of accounts owned by the authenticated user. | ✅ |
-| `GET` | `/api/accounts/balance/:accountId` | Retrieves the precise current balance of the specified account. | ✅ |
+| `POST` | `/api/auth/register` | Provisions a new user identity and securely hashes credentials. | ❌ (Public) |
+| `POST` | `/api/auth/login` | Authenticates user credentials, issuing a secure JWT HTTP-only cookie. | ❌ (Public) |
+| `POST` | `/api/auth/logout` | Safely terminates the active session by invalidating auth cookies. | ❌ (Public) |
 
-### 3. Transactional Processing (Ledger)
-Endpoints facilitating monetary movements and ledger operations.
-
-| Method | Endpoint | Description | Auth Required |
+### 🏦 2. Account Management
+Endpoints responsible for the creation and data retrieval of financial user accounts.
+| Method | Endpoint | Description | Auth Validation |
 | :--- | :--- | :--- | :---: |
-| `POST` | `/api/transactions/` | Initiates a peer-to-peer or multi-account fund transfer. | ✅ |
-| `POST` | `/api/transactions/system/initial-funds`| System/Admin endpoint to deposit initial startup capital securely. | ✅ (System) |
+| `POST` | `/api/accounts/` | Provisions a fresh, zero-balance bank account mapped to the active user. | ✅ (User JWT) |
+| `GET` | `/api/accounts/` | Retrieves a comprehensive array of all existing accounts owned by the user. | ✅ (User JWT) |
+| `GET` | `/api/accounts/balance/:id` | Queries the exact, real-time decimal balance of the specified account ID. | ✅ (User JWT) |
+
+### 💸 3. Transactional Ledger
+Endpoints facilitating monetary transfers and auditable ledger operations.
+| Method | Endpoint | Description | Auth Validation |
+| :--- | :--- | :--- | :---: |
+| `POST` | `/api/transactions/` | Initiates a standard peer-to-peer or internal multi-account funds transfer. | ✅ (User JWT) |
+| `POST` | `/api/transactions/system/initial-funds`| System-level administrative endpoint to deposit startup capital into user accounts. | 🛡️ (System JWT) |
 
 ---
 
-## 🏗️ Directory Taxonomy
+## 🚀 Getting Started
 
-A high-level overview of the architectural boundaries within the repository:
+Follow these rigorous instructions to safely provision the core banking backend in your local development environment.
 
-```text
-SmartBank/
-├── .env                     # Local environment configuration
-├── package.json             # Project manifest and scripts
-├── server.js                # Application bootstrapper and HTTP server binding
-└── src/
-    ├── app.js               # Express application initialization and middleware piping
-    ├── config/              # Infrastructure and database connection topologies
-    ├── controllers/         # HTTP request/response orchestrators
-    ├── middleware/          # Interceptors for authentication and request validation
-    ├── models/              # Database schema definitions and SQL queries
-    ├── routers/             # Endpoint routing and URI path definitions
-    └── services/            # Domain-specific business logic encapsulation
+### 1. Prerequisites
+Ensure your local host machine has the following tools installed and accessible via system PATH:
+- **Node.js**: `v18.0.0` or greater
+- **MySQL**: `v8.0` or greater (A running daemon accepting TCP connections)
+- **PNPM**: Package manager (install via `npm i -g pnpm`)
+
+### 2. Standard Installation
+
+Clone the repository and jump into the directory:
+```bash
+git clone <your-repo-link> SmartBank
+cd SmartBank
 ```
 
+Install the strict dependency tree defined in `pnpm-lock.yaml`:
+```bash
+pnpm install
+```
+
+### 3. Database Initialization
+1. Open your MySQL client (e.g., MySQL Workbench, DBeaver, or CLI).
+2. Create the target relational database:
+   ```sql
+   CREATE DATABASE smartbank_db;
+   ```
+3. *(Ensure your tables are migrated according to your `models/` or Prisma/Sequelize configurations).*
+
+### 4. Running the Development Server
+Execute the hot-reloading Nodemon server. This is optimal for local development:
+```bash
+pnpm run dev
+```
+*Expected Terminal Output:*
+> `Server is listening on port 4000`
+
 ---
 
-## ⚖️ Licensing
+## 🔒 Environment Variables
 
-This software is licensed under the **ISC License**.
+You must supply a `.env` file at the root of the `./SmartBank` directory. Note: Never commit this file to version control.
 
-*Developed by ajay.*
+| Variable Name | Type | Description | Default / Example |
+| :--- | :--- | :--- | :--- |
+| `PORT` | Number | TCP Port for Express to bind onto. | `4000` |
+| `DB_HOST` | String | FQDN or IP of the MySQL server. | `localhost` or `127.0.0.1` |
+| `DB_USER` | String | Privileged MySQL username. | `root` |
+| `DB_PASSWORD` | String | Secure password for the MySQL user. | `s3cr3t_p@ssw0rd` |
+| `DB_NAME` | String | Target logical database name. | `smartbank_db` |
+| `JWT_SECRET` | String | High-entropy string for signing user Auth tokens. | `a_very_long_random_string_here` |
+
+---
+
+## 📜 License & Ownership
+
+This project is proprietary and/or licensed under the **ISC License**. 
+All source code and architectural patterns originated by the core author.
+
+**Author:** ajay
