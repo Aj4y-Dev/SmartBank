@@ -84,7 +84,8 @@ export const handleUserLogin = async(req, res) => {
     const token = jwt.sign(
       {
         id : dbUser.id,
-        name: dbUser.name
+        name: dbUser.name,
+        systemUser: dbUser.systemUser
       },
       process.env.JWT_SECRET,
       {

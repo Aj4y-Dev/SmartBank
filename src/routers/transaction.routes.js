@@ -1,10 +1,13 @@
 import express from "express";
-import { authMiddleware } from "../middleware/auth.middleware.js";
-import { createTransaction } from "../controllers/transaction.controller.js";
+import { authMiddleware, authSystemUsermiddleware } from "../middleware/auth.middleware.js";
+import { createTransaction,createInitialFundsTransaction } from "../controllers/transaction.controller.js";
 
 const transactionRouter = express.Router();
 
 //- POST /api/transactions/ - create a new transaction
 transactionRouter.post("/", authMiddleware, createTransaction)
+
+// - POST /api/transactions/system/initial-funds - Create initial funds transaction from system user
+transactionRouter.post("/system/initial-funds", authSystemUsermiddleware,createInitialFundsTransaction);
 
 export default transactionRouter;

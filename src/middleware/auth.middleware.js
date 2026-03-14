@@ -45,7 +45,20 @@ export const authSystemUsermiddleware = async(req, res, next) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        const [rows] = await mysql_db.query("SELECT * FROM accounts WHERE id = ? AND systemUser = 1", [decoded.id]);
+        if (!decoded.systemUser) {
+            return res.status(403).json({ message: "Forbidden, system user access only" });
+        }
+
+        // console.log(decoded);
+        
+        //JOIN accounts to get the system user's account_id
+        const [rows] = await mysql_db.query(
+            `SELECT u.*, a.id as account_id 
+             FROM users u
+             JOIN accounts a ON a.user_id = u.id
+             WHERE u.id = ? AND u.systemUser = 1`,
+            [decoded.id]
+        );
 
         if (rows.length === 0) {
             return res.status(403).json({
