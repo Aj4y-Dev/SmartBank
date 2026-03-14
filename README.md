@@ -7,7 +7,6 @@
 [![Node.js](https://img.shields.io/badge/Node.js-18.x-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 [![Express.js](https://img.shields.io/badge/Express.js-Fast_Unopinionated-000000?logo=express&logoColor=white)](https://expressjs.com/)
 [![MySQL](https://img.shields.io/badge/MySQL-Relational_DB-4479A1?logo=mysql&logoColor=white)](https://www.mysql.com/)
-[![License: ISC](https://img.shields.io/badge/License-ISC-blue.svg)](https://opensource.org/licenses/ISC)
 
 </div>
 
@@ -214,10 +213,5 @@ You must supply a `.env` file at the root of the `./SmartBank` directory. Note: 
 - [Understanding MySQL Transactions (GeeksforGeeks)](http://geeksforgeeks.org/mysql/mysql-transaction/)
 
 ---
-
-## 📜 License & Ownership
-
-This project is proprietary and/or licensed under the **ISC License**. 
-All source code and architectural patterns originated by the core author.
 
 **Author:** ajay
