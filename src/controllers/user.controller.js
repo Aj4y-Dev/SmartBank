@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import {sendRegistrationEmail} from "../services/email.service.js"
 
+//- user register controller
 export const handleUserRegister = async (req, res) => {
   try {
     const { email, name, password } = req.body;
@@ -52,6 +53,7 @@ export const handleUserRegister = async (req, res) => {
   }
 };
 
+// - User Login Controller
 export const handleUserLogin = async(req, res) => {
   try {
     const {email, password} = req.body;
@@ -108,5 +110,19 @@ export const handleUserLogin = async(req, res) => {
       message: "Login error",
       error: error.message,
     });
+  }
+}
+
+//- User Logout Controller
+export const handleUserLogout = async(req, res) => {
+  try {
+    res.clearCookie("token");
+    return res.status(200).json({ message: "User logged out successfully." });
+  } catch (error) {
+    console.error("Error inhandleUserLogout:", error);
+        return res.status(500).json({
+            message: "Logout failed.",
+            error: error.message
+        });
   }
 }
