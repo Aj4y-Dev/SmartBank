@@ -20,7 +20,6 @@
 - [API Reference Manual](#-api-reference-manual)
 - [Getting Started](#-getting-started)
 - [Environment Variables](#-environment-variables)
-- [License](#-license)
 
 ---
 
