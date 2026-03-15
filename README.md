@@ -37,35 +37,47 @@ Whether you're building a web frontend, a mobile application, or a third-party m
 The core of SmartBank operates on a standard multi-tier architectural pattern. We isolate route definitions, middleware validation, business logic, and database interactions to maintain high cohesion and low coupling.
 
 ```mermaid
-graph TD
-    Client(["📱 Client (Web/Mobile)"]) -- "HTTP/REST Requests" --> Gateway["🌐 Express API Router"]
+flowchart TD
+    Client(["📱 Client (Web/Mobile)"]) -- "1. HTTP/REST Request" --> Gateway["🌐 Express API Router"]
     
     subgraph "Application Layer (Node.js/Express)"
-        Gateway --> AuthMiddleware{"🛡️ JWT Auth Middleware"}
-        AuthMiddleware -- "Invalid Token" --> Unauthorized["❌ 401 Unauthorized Response"]
-        AuthMiddleware -- "Valid Token / Public Route" --> Controllers["⚙️ Controllers"]
+        Gateway -- "2. Route Request" --> AuthMiddleware{"🛡️ JWT Auth Middleware"}
+        AuthMiddleware -- "3b. Invalid Token" --> Unauthorized["❌ 401 Unauthorized Response"]
+        AuthMiddleware -- "3a. Valid Token / Public" --> Controllers["⚙️ Controllers"]
         
-        Controllers --> Services["🧠 Business Logic Services"]
+        Controllers -- "4. Execute Logic" --> Services["🧠 Business Logic Services"]
         
-        Services -- "Authentication logic" --> UserAuth["Identity & Registration"]
-        Services -- "Ledger operations" --> Ledger["Transaction Processing"]
-        Services -- "Account logic" --> AccountManagement["Account Verification"]
+        Services -. "Authentication" .-> UserAuth["Identity & Registration"]
+        Services -. "Ledger" .-> LedgerNode["Transaction Processing"]
+        Services -. "Account" .-> AccountManagement["Account Verification"]
     end
     
     subgraph "Data Persistence Layer"
-        UserAuth --> DB[("🛢️ MySQL Database")]
-        Ledger --> DB
-        AccountManagement --> DB
+        UserAuth ==> DB[("🛢️ MySQL Database")]
+        LedgerNode ==> DB
+        AccountManagement ==> DB
     end
     
-    DB -. "Query Results" .-> Services
-    Services -. "Standardized Data" .-> Controllers
-    Controllers -. "JSON HTTP Responses" .-> Gateway
-    Gateway -. "HTTP 200/201/400" .-> Client
+    DB -. "5. Query Results" .-> Services
+    Services -. "6. Standardized Data" .-> Controllers
+    Controllers -. "7. JSON HTTP Response" .-> Gateway
+    Gateway -. "8. HTTP 200/201/400" .-> Client
 
-    classDef default fill:#f9f9f9,stroke:#333,stroke-width:2px;
-    classDef highlight fill:#e1f5fe,stroke:#03a9f4,stroke-width:2px;
-    class Gateway,AuthMiddleware,Controllers highlight;
+    %% Custom Categorized Styles %%
+    classDef default fill:#ffffff,stroke:#cccccc,stroke-width:1px,color:#333333;
+    classDef clientLayer fill:#e3f2fd,stroke:#1e88e5,stroke-width:2px,color:#0d47a1;
+    classDef routerLayer fill:#fff3e0,stroke:#fb8c00,stroke-width:2px,color:#e65100;
+    classDef authLayer fill:#ffebee,stroke:#e53935,stroke-width:2px,color:#b71c1c;
+    classDef controllerLayer fill:#e8f5e9,stroke:#43a047,stroke-width:2px,color:#1b5e20;
+    classDef serviceLayer fill:#f3e5f5,stroke:#8e24aa,stroke-width:2px,color:#4a148c;
+    classDef dbLayer fill:#eceff1,stroke:#546e7a,stroke-width:2px,color:#263238;
+
+    class Client clientLayer;
+    class Gateway routerLayer;
+    class AuthMiddleware,Unauthorized authLayer;
+    class Controllers controllerLayer;
+    class Services,UserAuth,LedgerNode,AccountManagement serviceLayer;
+    class DB dbLayer;
 ```
 
 ---
